@@ -1,5 +1,8 @@
-test
+venv
+myenv
 dist/
+flask_session
+**/__pycache__
 
 # local env files
 .env.local
