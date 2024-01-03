@@ -15,7 +15,7 @@ class DatabaseAPI:
         cursor.execute('SELECT student_id, face_embedding FROM face_id ORDER BY face_embedding <=> %s LIMIT 5;', (embedding, ))
         for record in cursor:
             if fr.compare_faces([record[1]], embedding, tolerance=0.6)[0]:
-                return record[0]
+                return record
         return None
 
     def registerStudent(self, embedding: list[float], studentID: int) -> bool:

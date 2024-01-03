@@ -8,6 +8,7 @@ import queue
 
 import tracemalloc
 import time
+import datetime
 
 import requests
 
@@ -34,6 +35,7 @@ cache = {
 
 def mark_attendance(url, json):
     response = requests.post(url, json=json)
+    print(response)
     if response.status_code == 200:
         return response.json()
     else:
@@ -42,24 +44,31 @@ def mark_attendance(url, json):
 
 
 def worker():
-    url = 'http://127.0.0.1:5000/api/markAttendance'
+    url = 'http://127.0.0.1:8000/api_1/mark_attendance'
     while True:
         image = q.get()
-        frame = f.resizeImg(image, 0.25)
+        if image is None:
+            print("Couldn't catch Image")
+            q.task_done()
+            continue
+        else:
+            frame = f.resizeImg(image, 0.25)
         faces = f.detectFaces(frame)
         encodings = f.getEncodings(frame, faces)
         for encoding in encodings:
             matches = face_recognition.compare_faces(cache['index'],
                                                      encoding, tolerance=0.6)
             try:
-                matches.index(True)
+                idx = matches.index(True)
+                print('cache hit')
+                print('student id: ', cache['value'][idx])
             except Exception:
                 res = mark_attendance(url,
-                                      {'encoding': encoding.tolist(),
-                                       'time': time.time()})
+                                      {'embedding': encoding.tolist(),
+                                       'time': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
                 if ('id' in res):
                     print('Attendance was marked for student id: ', res['id'])
-                    cache['index'].append(encoding)
+                    cache['index'].append(res['embedding'])
                     cache['value'].append(res['id'])
         q.task_done()
 
