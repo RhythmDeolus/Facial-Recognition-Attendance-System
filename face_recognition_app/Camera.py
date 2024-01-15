@@ -1,22 +1,23 @@
 import cv2
 
+
 class Camera:
-  def __init__(self):
-    self.vid = None
+    def __init__(self):
+        self.vid = None
 
-  def open(self):
+    def open(self):
+        self.vid = cv2.VideoCapture(0)
+        if self.vid is None or not self.vid.isOpened():
+            self.vid = cv2.VideoCapture(2)
 
-    self.vid = cv2.VideoCapture(0)
+    def get_image(self):
+        _, frame = self.vid.read()
+        frame = cv2.flip(frame, 1)
 
-  def get_image(self):
-    _ , frame = self.vid.read()
+        # b, g, r = cv2.split(frame)
+        # frame = cv2.merge((r, g, b))
 
-    frame = cv2.flip(frame, 1)
+        return frame
 
-    # b, g, r = cv2.split(frame)
-    # frame = cv2.merge((r, g, b))
-
-    return frame
-  def close(self):
-    self.vid.release()
-
+    def close(self):
+        self.vid.release()
