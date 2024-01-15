@@ -3,5 +3,6 @@ module.exports = defineConfig({
   outputDir: "../dist",
   //relative to outputDir
   assetsDir: "static",
-  transpileDependencies: true
+  transpileDependencies: true,
+  lintOnSave: false
 })
