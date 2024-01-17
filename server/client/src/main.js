@@ -1,11 +1,15 @@
 import {createApp} from 'vue'
 import App from './App.vue'
-import {createRouter, createWebHashHistory} from 'vue-router'
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import HomeVue from './view/Home.vue'
 import AboutVue from './view/About.vue'
 import LoginVue from './view/Login.vue'
 import ContactVue from './view/Contact.vue'
 import AttendanceVue from './view/Attendance.vue'
+import AdminLoginVue from './view/AdminLogin.vue'
+import StudentRegistrationVue from './view/StudentRegistration.vue'
+import CamVue from './view/Cam.vue'
+
 
 // 1. Define route components.
 // These can be imported from other files
@@ -19,6 +23,9 @@ const routes = [
   { path: '/Attendance', component: AttendanceVue },
   { path: '/Contact', component: ContactVue },
   { path: '/Login', component: LoginVue },
+  { path: '/AdminLogin', component: AdminLoginVue },
+  { path: '/StudentRegistration', component: StudentRegistrationVue },
+  { path: '/cam', component: CamVue },
   {path: '/', component: HomeVue}
 ]
 
@@ -27,7 +34,7 @@ const routes = [
 // keep it simple for now.
 const router = createRouter({
   // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes, // short for `routes: routes`
 })
 

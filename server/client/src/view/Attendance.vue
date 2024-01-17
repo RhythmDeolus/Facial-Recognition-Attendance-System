@@ -1,4 +1,5 @@
 <template>
+  <Navbar/>
     <table>
     <thead>
       <tr>
@@ -17,24 +18,15 @@
   </table>
     </template>
 
-<script setup>
-      let studentdata = {
-        1 : 'rhythm' , 
-        2 : 'vasu' , 
-        3 : 'Amal'
+<script>
+import Navbar from '@/components/Navbar.vue';
 
-      }
-      let attendancedata = {
-        0 : {'rhythm' : 'day01'} 
-      }
-      let users = [
-        { id: 1, name: 'Rhythm', day01: '' },
-        { id: 2, name: 'Vasu', day01: '' },
-        { id: 3, name: 'Amal', day01: '' }
-      ]
-     
-
-    
+export default {
+  components: {
+    Navbar, // Register the Navbar component
+  },
+  // Your component logic goes here
+};
 </script>
 
 <style>
