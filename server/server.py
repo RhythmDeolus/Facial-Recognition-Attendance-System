@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, responses
 from fastapi.staticfiles import StaticFiles
 from scripts.api1 import api1
 import uvicorn
@@ -24,9 +24,13 @@ async def startup_event():
     print("api established: ", api1.database)
 
 
-app.mount("/static/", StaticFiles(directory="dist/static"), name="static")
+# app.mount("/static/", StaticFiles(directory="client/dist/static"), name="static")
 app.mount("/api_1", api1)
-app.mount("/", StaticFiles(directory="dist", html=True), name="static")
+app.mount("/", StaticFiles(directory="client/dist", html=True), name="static")
+
+@app.exception_handler(404)
+async def custom_404_handler(_, __):
+        return  responses.FileResponse('./client/dist/index.html')
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1", port=8000)

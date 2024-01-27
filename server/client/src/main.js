@@ -18,13 +18,13 @@ import CamVue from './view/Cam.vue'
 // Each route should map to a component.
 // We'll talk about nested routes later.
 const routes = [
-  { path: '/Home', component: HomeVue },
-  { path: '/About', component: AboutVue },
-  { path: '/Attendance', component: AttendanceVue },
-  { path: '/Contact', component: ContactVue },
-  { path: '/Login', component: LoginVue },
-  { path: '/AdminLogin', component: AdminLoginVue },
-  { path: '/StudentRegistration', component: StudentRegistrationVue },
+  { path: '/home', component: HomeVue },
+  { path: '/about', component: AboutVue },
+  { path: '/attendance', component: AttendanceVue },
+  { path: '/contact', component: ContactVue },
+  { path: '/login', component: LoginVue },
+  { path: '/adminlogin', component: AdminLoginVue },
+  { path: '/studentregistration', component: StudentRegistrationVue },
   { path: '/cam', component: CamVue },
   {path: '/', component: HomeVue}
 ]

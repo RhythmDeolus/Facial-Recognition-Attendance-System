@@ -14,5 +14,5 @@ face_recog = DatabaseAPI(conn)
 image1 = fr.load_image_file('R.jpg')
 image2 = fr.load_image_file('M.jpg')
 
-print(face_recog.deleteStudent(2))
-print(face_recog.getStudentID(image2))
+print(face_recog.deleteStudentFace(2))
+print(face_recog.getStudentIDFromFace(image2))

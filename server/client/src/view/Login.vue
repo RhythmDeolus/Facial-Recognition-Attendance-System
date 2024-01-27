@@ -10,9 +10,9 @@
         <button>Submit</button><button>Cancel</button>
     </form>
     <hr>
-    <a href="/AdminLogin">Admin Login</a>
+    <router-link to='/adminlogin'>Admin Login</router-link>
     <hr>
-        <a href="./Home">Back to Home</a>
+    <router-link to='/home'>Back to Home</router-link>
     </template>
 
 <script>

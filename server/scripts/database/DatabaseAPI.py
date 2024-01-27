@@ -3,6 +3,7 @@ import face_recognition as fr
 import numpy as np
 from datetime import datetime
 from functools import wraps
+from .FaceRecog import FaceRecog
 
 def handle_error(value=None):
     def outer(f):
@@ -21,6 +22,7 @@ class DatabaseAPI:
     def __init__(self, conn):
         self.conn = conn
         self.createDatabase()
+        self.fr = FaceRecog()
         register_vector(conn)
     
     @handle_error()
@@ -47,7 +49,7 @@ class DatabaseAPI:
         self.conn.commit()
 
     @handle_error()
-    def getStudentID(self, embedding: list[float]) -> int | None:
+    def getStudentIDFromFace(self, embedding: list[float]) -> int | None:
             cursor = self.conn.cursor()
             embedding = np.array(embedding)
             cursor.execute('SELECT student_id, face_embedding FROM face_id ORDER BY face_embedding <=> %s LIMIT 5;', (embedding, ))
@@ -57,15 +59,28 @@ class DatabaseAPI:
             return None
 
     @handle_error(False)
-    def registerStudent(self, embedding: list[float], studentID: int) -> bool:
+    def registerStudentFace(self, image: str, studentID: int) -> bool:
+        image = self.fr.stringToArray(image)
+        faces = self.fr.detectFaces(image)
+        if len(faces) > 0:
+            encodings = self.fr.getEncodings(image, [faces[0]])
+            embedding = encodings[0]
+            cursor = self.conn.cursor()
+            embedding = np.array(embedding)
+            cursor.execute('INSERT INTO face_id (student_id, face_embedding) VALUES %s;', ((studentID, embedding),))
+            self.conn.commit()
+            return True
+        return False
+
+    @handle_error(False)
+    def registerStudent(self, id: int, name: str):
         cursor = self.conn.cursor()
-        embedding = np.array(embedding)
-        cursor.execute('INSERT INTO face_id (student_id, face_embedding) VALUES %s;', ((studentID, embedding),))
+        cursor.execute('INSERT INTO student (id, name) VALUES %s;', ((id, name), ))
         self.conn.commit()
         return True
 
     @handle_error(False)
-    def deleteStudent(self, studentID: int) -> bool:
+    def deleteStudentFace(self, studentID: int) -> bool:
         cursor = self.conn.cursor()
         cursor.execute('DELETE FROM face_id WHERE student_id = %s;', (studentID,))
         self.conn.commit()
@@ -73,11 +88,16 @@ class DatabaseAPI:
 
     @handle_error(False)
     def update_embedding(self, student_id: int, embedding: list[float]) -> bool:
-        cursor = self.conn.cursor()
-        embedding = np.array(embedding)
-        cursor.execute('UPDATE face_id SET face_embedding = %s WHERE student_id = %s;', (embedding, student_id,))
-        self.conn.commit()
-        return True
+        faces = self.fr.detectFaces(image)
+        if len(faces) > 0:
+            encodings = self.fr.getEncodings(image, [faces[0]])
+            embedding = encodings[0]
+            cursor = self.conn.cursor()
+            embedding = np.array(embedding)
+            cursor.execute('UPDATE face_id SET face_embedding = %s WHERE student_id = %s;', (embedding, student_id,))
+            self.conn.commit()
+            return True
+        return False
         
     @handle_error([])
     def get_attendance(self):

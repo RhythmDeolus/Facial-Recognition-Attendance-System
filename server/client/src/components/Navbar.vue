@@ -1,10 +1,12 @@
 <template>
     <nav class="navbar">
-      <router-link to="/Home">Home</router-link>
+      <router-link to="/home">Home</router-link>
       <router-link to="/attendance">Attendance</router-link>
       <router-link to="/login">Login</router-link>
       <router-link to="/about">About</router-link>
-      <router-link to="/Contact">Contact Us</router-link>
+      <router-link to="/contact">Contact Us</router-link>
+      <router-link to="/studentregistration">Register Student</router-link>
+      <router-link to="/cam">Register Face</router-link>
     </nav>
   </template>
   

@@ -1,20 +1,20 @@
 <template>
-  <Navbar/>
+  <Navbar />
   <h1>Enroll Facial Data</h1>
-  <form action="">
-      <p>Student ID</p>
-          <input type = 'text'>
-      
   <div>
-    <video ref="video" autoplay></video>
-    <button @click="captureImage">Capture Image</button>
-    <canvas ref="canvas" style="display: none;"></canvas>
-    <img v-if="capturedImage" :src="capturedImage" alt="Captured Image" />
+    <p>Student ID</p>
+    <input type='text' v-model="id" required>
+
+    <div>
+      <video ref="video" autoplay></video>
+      <button @click="captureImage">Capture Image</button>
+      <canvas ref="canvas" style="display: none;"></canvas>
+      <img v-if="capturedImage" :src="capturedImage" alt="Captured Image" />
+    </div>
+    <br>
+    <br>
+    <button @click="checkForm">Submit</button><button>Cancel</button>
   </div>
-  <br>
-  <br>
-      <button>Submit</button><button>Cancel</button>
-  </form>
 </template>
 
 <script>
@@ -26,12 +26,31 @@ export default {
   data() {
     return {
       capturedImage: null,
+      id: null
     };
   },
   mounted() {
     this.setupCamera();
   },
   methods: {
+    checkForm(e) {
+      if (Number(this.id) && this.capturedImage) {
+        fetch('/api_1/register_student_face', {
+          method: 'POST',
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            id: Number(this.id),
+            image: this.capturedImage.replace(/^data:\w+\/\w+;base64,/, '')
+          })
+        }).then(async (response) => {
+          let val = await response.json()
+          alert(val)
+        })
+      }
+
+    },
     async setupCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });

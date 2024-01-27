@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Annotated
 from .database.DatabaseAPI import DatabaseAPI
 
 api1 = FastAPI()
@@ -17,36 +18,44 @@ class AttendanceItem(BaseModel):
 
 class StudentFaceItem(BaseModel):
     id: int
-    embedding: list[float]
+    image: str
 
 
 class MarkedAttendanceResponse(BaseModel):
     id: int | None
     embedding: list[float] | None
 
+class StudentItem(BaseModel):
+    id: int
+    name: str
 
 @api1.post('/mark_attendance', response_model=MarkedAttendanceResponse)
 async def mark_attendance(body: AttendanceItem):
-    res = getDatabase().getStudentID(body.embedding)
-    student_id = None
-    embedding = None
-    print(res)
-    if type(res) is tuple:
-        student_id, embedding = res
-    if type(student_id) is not None:
-        api1.database.mark_attendance(student_id, body.time)
+    res = getDatabase().getStudentIDFromFace(body.embedding)
+    if res is not None:
+        student_id = None
+        embedding = None
+        print(res)
+        if type(res) is tuple:
+            student_id, embedding = res
+        if type(student_id) is not None:
+            api1.database.mark_attendance(student_id, body.time)
     return {'id': student_id, 'embedding': embedding}
 
 
 @api1.post('/register_student_face')
 async def register_student_face(body: StudentFaceItem):
-    res = getDatabase().registerStudent(body.embedding, body.id)
+    res = getDatabase().registerStudentFace(body.image, body.id)
     return res
-
 
 @api1.post('/update_student_face')
 async def update_student_face(body: StudentFaceItem):
-    res = getDatabase().update_embedding(body.id, body.embedding)
+    res = getDatabase().update_embedding(body.id, body.image)
+    return res
+
+@api1.post('/register_student')
+async def register_student(body: StudentItem):
+    res = getDatabase().registerStudent(body.id, body.name)
     return res
 
 @api1.get('/get_students')

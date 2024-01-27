@@ -9,9 +9,9 @@
         <br>
         <button>Submit</button><button>Cancel</button>
         <hr>
-        <a href="./Login">Student Login</a>
+        <router-link to='/login'>Admin Login</router-link>
         <hr>
-        <a href="./Home">Back to Home</a>
+        <router-link to='/home'>Back to Home</router-link>
 
         
         </form>

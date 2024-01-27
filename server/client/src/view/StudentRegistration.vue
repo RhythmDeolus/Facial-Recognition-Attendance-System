@@ -1,33 +1,46 @@
 <template>
     <Navbar/>
     <center><H1>Student Registration</H1></center>
-    <form action="">
+    <div >
         <p>Name : </p>
-            <input type = 'text'>
-        <p>Email ID : </p>
-            <input type="text">
+            <input type = 'text' v-model="name" name="name" required>
         <p>Roll Number : </p>
-            <input type="text">
+            <input type="text" v-model="id" name="id" required>
         
         <br>
         <br>
-        <button>Submit</button><button>Cancel</button>
-    </form>
+        <button type="button" @click="checkForm">Submit</button><button>Cancel</button>
+    </div>
     <hr>
-    <a href="/AdminLogin">Admin Login</a>
+    <router-link to="/adminlogin">Admin Login</router-link>
     <hr>
-        <a href="./Home">Back to Home</a>
+        <router-link to="/home">Back to Home</router-link>
 </template>
 
-<script>
+<script setup>
 import Navbar from '@/components/Navbar.vue';
 
-export default {
-  components: {
-    Navbar, // Register the Navbar component
-  },
-  // Your component logic goes here
-};
+let name = null;
+let id = null;
+
+function checkForm(e) {
+    if (name && Number(id)) {
+        fetch('/api_1/register_student', {
+            method: 'POST',
+            headers: {
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                id: Number(id)
+            })
+        }).then(async (response) => {
+           let val = await response.json() 
+           alert(val)
+        })
+    }
+    
+}
 </script>
 
 <style>

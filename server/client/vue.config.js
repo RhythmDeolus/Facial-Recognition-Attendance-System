@@ -1,8 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  outputDir: "../dist",
-  //relative to outputDir
-  assetsDir: "static",
-  transpileDependencies: true,
-  lintOnSave: false
+    //relative to outputDir
+    transpileDependencies: true,
+    lintOnSave: false
 })
