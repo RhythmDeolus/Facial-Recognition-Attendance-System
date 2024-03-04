@@ -2,6 +2,9 @@ from fastapi import FastAPI, responses
 from fastapi.staticfiles import StaticFiles
 from scripts.api1 import api1
 import uvicorn
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 import psycopg2
 from scripts.database.DatabaseAPI import DatabaseAPI
@@ -14,11 +17,7 @@ api1.database = None
 
 @app.on_event('startup')
 async def startup_event():
-    api1.conn = psycopg2.connect(database="attendance_system",
-                                 host="localhost",
-                                 user="admin",
-                                 password="1234",
-                                 port="5432")
+    api1.conn = psycopg2.connect(os.getenv('DB_URL'))
     print("connection established: ", api1.conn)
     api1.database = DatabaseAPI(api1.conn)
     print("api established: ", api1.database)
