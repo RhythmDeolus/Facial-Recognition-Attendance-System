@@ -1,4 +1,6 @@
 <template>
+    <div class="background-image-container">
+  <div class="card-about">
     <Navbar />
     <table :key="rerenderkey" border="1" align="center">
         <thead>
@@ -20,6 +22,8 @@
         </tbody>
     </table>
     <button @click="fetchAttendanceData()">Refresh</button>
+    </div>
+    </div>
 </template>
 
 <script setup>
@@ -112,4 +116,90 @@ function setTable(studentdata, attendanceData) {
 
 </script>
 
-<style></style>
+<style scoped>
+.background-image-container {
+  /* Set the background image */
+  background-image: url('../assets/AMS-logo.jpeg');
+
+  /* Set background size, position, and other properties as needed */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Set other styles for the container if needed */
+  width: 100%;
+  height: 700px;
+   /* Or any desired height */
+   
+}
+.card-about {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  margin: 20px;
+  backdrop-filter: blur(5px);
+  min-height: 90vh;
+}
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: 20px auto;
+        border-radius: 20px;
+        font-size: 1.5em;
+        color: white;
+        align-content: center;
+        
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+        
+    }
+    tr{
+        border-radius:10px;
+    }
+
+    th {
+        background-color: #2B2C2B;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+
+    div[bgcolor="green"] {
+        background-color: green;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    div[bgcolor="red"] {
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    button {
+        margin: 20px auto;
+        display: block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+

@@ -26,7 +26,7 @@ const routes = [
   { path: '/adminlogin', component: AdminLoginVue },
   { path: '/studentregistration', component: StudentRegistrationVue },
   { path: '/cam', component: CamVue },
-  {path: '/', component: HomeVue}
+  {path: '/', component: HomeVue},
 ]
 
 // 3. Create the router instance and pass the `routes` option

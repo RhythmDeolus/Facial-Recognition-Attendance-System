@@ -1,19 +1,39 @@
 <template>
-  <Navbar />
-  <h1>Enroll Facial Data</h1>
-  <div>
-    <p>Student ID</p>
-    <input type='text' v-model="id" required>
-
-    <div>
-      <video ref="video" autoplay></video>
-      <button @click="captureImage">Capture Image</button>
-      <canvas ref="canvas" style="display: none;"></canvas>
-      <img v-if="capturedImage" :src="capturedImage" alt="Captured Image" />
+  <div class="card-layout">
+    <div class="background-image-container">
+      <div class="card-about">
+        <div class="nav">
+        <Navbar />
+      </div>
+        <div class="card-container">
+          <div class="card">
+            <center><h1>Enroll Face Data</h1></center>
+            <div class="input-container">
+              <p>Student ID</p>
+              <input type='text' v-model="id" required class="input-box">
+            </div>
+            <div class="video-container">
+              <video ref="video" autoplay></video>
+              <button @click="captureImage" class="capture-btn">Capture Image</button>
+              <canvas ref="canvas" style="display: none;"></canvas>
+              <img v-if="capturedImage" :src="capturedImage" alt="Captured Image" class="captured-image" />
+            </div>
+            <div class="button-container">
+              <button @click="checkForm" class="submit">Submit</button>
+              <button class="cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="extra-btn">
+        <router-link to='/AdminLogin'>
+          <button class="admin">Admin Login</button>
+        </router-link>
+        <router-link to="/home">
+          <button class="home">Back to Home</button>
+        </router-link>
+      </div>
     </div>
-    <br>
-    <br>
-    <button @click="checkForm">Submit</button><button>Cancel</button>
   </div>
 </template>
 
@@ -21,7 +41,7 @@
 import Navbar from '@/components/Navbar.vue';
 export default {
   components: {
-    Navbar, // Register the Navbar component
+    Navbar,
   },
   data() {
     return {
@@ -49,7 +69,6 @@ export default {
           alert(val)
         })
       }
-
     },
     async setupCamera() {
       try {
@@ -64,17 +83,13 @@ export default {
       const canvas = this.$refs.canvas;
       const context = canvas.getContext('2d');
 
-      // Set the canvas dimensions to match the video feed
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      // Draw the current frame from the video feed onto the canvas
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Convert the canvas content to a data URL (base64-encoded image)
       const dataUrl = canvas.toDataURL('image/png');
 
-      // Set the captured image in the data property
       this.capturedImage = dataUrl;
     },
   },
@@ -82,5 +97,155 @@ export default {
 </script>
 
 <style scoped>
-/* Add your component-specific styles here */
+.card-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.background-image-container {
+  background-image: url('../assets/AMS-logo.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.card-about {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  height:500px;
+  overflow-y: scroll;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-box{
+  border:2px solid gray;
+  padding:10px 5px 10px 5px;
+  border-radius: 50px;
+  font-size: 20px;
+}
+
+.input-container{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.video-container {
+  margin-top: 20px;
+  position: relative;
+}
+
+.video-container video {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.capture-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.captured-image {
+  margin-top: 10px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.submit,
+.cancel {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 5px;
+}
+
+.submit {
+  background-color: #28a745;
+  color: white;
+  margin-right: 10px;
+}
+
+.cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.submit:hover,
+.cancel:hover {
+  background-color: transparent;
+  color: black;
+}
+
+.extra-btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.admin,
+.home {
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.admin {
+  background-color: #007bff;
+  color: white;
+}
+
+.home {
+  background-color: #28a745;
+  color: white;
+}
+
+.admin:hover,
+.home:hover {
+  background-color: transparent;
+  color: black;
+}
+
+
 </style>
