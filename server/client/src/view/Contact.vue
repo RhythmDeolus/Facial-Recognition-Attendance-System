@@ -1,7 +1,6 @@
 <template>
   <div class="background-image-container">
     <div class="card-about">
-      <Navbar/>
       <div class="card-container">
         <a href="https://github.com/rhythmdeolus" class="card-link">
         <div class="card-student">
@@ -39,13 +38,6 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar.vue';
-
-export default {
-  components: {
-    Navbar,
-  },
-};
 </script>
 
 <style scoped>

@@ -1,7 +1,6 @@
 <template>
     <div class="background-image-container">
   <div class="card-about">
-    <Navbar />
     <table :key="rerenderkey" border="1" align="center">
         <thead>
             <tr>
@@ -12,8 +11,8 @@
         </thead>
         <tbody>
             <tr v-for="(n, index) in studentIdList.length" :key="index">
-                <td>{{ studentdata[studentIdList[index]]?.name }}</td>
-                <td>{{ studentIdList[index] }}</td>
+                <td style="color:black">{{ studentdata[studentIdList[index]]?.name }}</td>
+                <td style="color:black">{{ studentIdList[index] }}</td>
                 <td v-for="attendance in studentAttendance[studentIdList[index]]">
                     <div bgcolor="green" v-if="attendance"> Pre. </div>
                     <div bgcolor="red" v-if="!attendance"> Abs. </div>
@@ -33,7 +32,8 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
-import Navbar from '@/components/Navbar.vue';
+import { useAttendance, useStudents } from '@/composables/fetch';
+
 import {ref} from 'vue';
 
 let rerenderkey = ref(1)
@@ -48,25 +48,21 @@ let studentAttendance = {}
 
 
 let studentdata = {
-    // 1: {name: 'rhythm'},
-    // 2: {name:'vasu'},
-    // 3: {name:'Amal'}
+    1: {name: 'rhythm'},
+    2: {name:'vasu'},
+    3: {name:'Amal'}
 }
 let attendanceData = {
-    // '1': { id: 1, name: 'Rhythm', day: 1 },
-    // '2': { id: 2, name: 'Vasu', day: 2 },
-    // '3': { id: 3, name: 'Amal', day: 5 },
+    '1': { id: 1, name: 'Rhythm', day: 1 },
+    '2': { id: 2, name: 'Vasu', day: 2 },
+    '3': { id: 3, name: 'Amal', day: 5 },
 }
 
 async function fetchAttendanceData() {
-    try {
-        const response = await fetch('/api_1/get_students');
-        const students = await response.json();
-        studentdata = students
-        const response2 = await fetch('/api_1/get_attendance');
-        const attendance = await response2.json();
-        attendanceData = attendance;
-        setTable(studentdata, attendance);
+    try { 
+        studentdata = await useStudents()
+        attendanceData = await useAttendance();
+        setTable(studentdata, attendanceData);
         rerender()
     } catch (error) {
         console.error(error);

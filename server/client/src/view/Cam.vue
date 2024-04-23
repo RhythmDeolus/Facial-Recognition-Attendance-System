@@ -3,7 +3,6 @@
     <div class="background-image-container">
       <div class="card-about">
         <div class="nav">
-        <Navbar />
       </div>
         <div class="card-container">
           <div class="card">
@@ -38,11 +37,8 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar.vue';
+import { useAccessToken } from '@/composables/auth';
 export default {
-  components: {
-    Navbar,
-  },
   data() {
     return {
       capturedImage: null,
@@ -58,7 +54,8 @@ export default {
         fetch('/api_1/register_student_face', {
           method: 'POST',
           headers: {
-            "Content-Type": 'application/json'
+            "Content-Type": 'application/json',
+            "Authorization": `Bearer ${useAccessToken()}`
           },
           body: JSON.stringify({
             id: Number(this.id),

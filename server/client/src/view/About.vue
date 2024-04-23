@@ -1,7 +1,6 @@
 <template>
   <div class="background-image-container">
   <div class="card-about">
-    <Navbar/>
     <div class="content">
       <h1>Facial Recognition based Attendance Management System</h1>
   <p><strong>Objective:</strong> To revolutionize traditional attendance tracking by employing cutting-edge technology to streamline and automate attendance monitoring.</p>
@@ -33,14 +32,6 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar.vue';
-
-export default {
-  components: {
-    Navbar, // Register the Navbar component
-  },
-  // Your component logic goes here
-};
 </script>
 
 <style scoped>

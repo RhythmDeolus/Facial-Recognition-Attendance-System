@@ -3,12 +3,12 @@
         <div class="card-container">
     <div class="card">
       <center><h1>Admin Login</h1></center>
-      <form action="">
+      <form action="" :onsubmit="handleSubmit">
         <div class="input-container">
         <p>ID :</p>
-        <input class="input-box" type='text'>
+        <input class="input-box" type='text' v-model="username">
         <p>Password :</p>
-        <input class="input-box" type="password">
+        <input class="input-box" type="password" v-model="password">
       </div>
         <div class="button-container">
           <button class="submit">Submit</button>
@@ -16,7 +16,7 @@
         </div>
       </form>
       <div class="extra-btn">
-        <router-link to='/Login'>
+        <router-link to='/login'>
           <button class="admin" >Student Login</button>
         </router-link>
         <router-link to="/home">
@@ -28,8 +28,34 @@
     </div>
     </template>
 
-<script>
-   
+<script setup>
+  import { ref } from 'vue';
+  import {useRouter} from 'vue-router';
+  const router = useRouter();
+  let password = ref(null)
+  let username = ref(null)
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    let response = await fetch('/api_1/token', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'grant_type': "",
+        'username': username.value,
+        'password': password.value,
+        "scope": "",
+        "client_id": "",
+        "client_secret": ""
+      })
+    })
+    response = await response.json()
+    localStorage.setItem('token', JSON.stringify(response));
+    router.push('/')
+  }
 </script>
 
 <style scoped>

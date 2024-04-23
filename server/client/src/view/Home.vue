@@ -1,25 +1,16 @@
 <template>
-  <div class="card-about">
+    <div class="card-about">
     <Navbar/>
     <div class="container">
     <div class="heading-image"><img class="background-image" src="../assets/AMS-logo.jpeg" alt="Facial Attendance Image"></div>
     <div class="text">
-      <h1>Attendance Management System</h1>
+    <h1>Attendance Management System</h1>
     </div>
     </div>
-  </div>
-
-    </template>
+    </div>
+</template>
 
 <script>
-    import Navbar from '@/components/Navbar.vue';
-
-export default {
-  components: {
-    Navbar, // Register the Navbar component
-  },
-  // Your component logic goes here
-};
 </script>
 
 <style scoped>

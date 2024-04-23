@@ -1,7 +1,6 @@
 <template>
     <div class="background-image-container">
         <div class="card-about">
-        <Navbar />
         <div class="card-container">
     <div class="card">
       <center><h1>Student Registration</h1></center>
@@ -18,7 +17,7 @@
         </div>
       </form>
       <div class="extra-btn">
-        <router-link to='/AdminLogin'>
+        <router-link to='/adminlogin'>
           <button class="admin" >Admin Login</button>
         </router-link>
         <router-link to="/home">
@@ -32,7 +31,7 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/Navbar.vue';
+import { useAccessToken } from '@/composables/auth';
 
 let name = null;
 let id = null;
@@ -42,7 +41,8 @@ function checkForm(e) {
         fetch('/api_1/register_student', {
             method: 'POST',
             headers: {
-                "Content-Type": 'application/json'
+                "Content-Type": 'application/json',
+                'Authorization': `Bearer ${useAccessToken()}`
             },
             body: JSON.stringify({
                 name: name,

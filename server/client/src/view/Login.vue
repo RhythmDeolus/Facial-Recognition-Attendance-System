@@ -3,12 +3,12 @@
         <div class="card-container">
     <div class="card">
       <center><h1>Student Login</h1></center>
-      <form action="">
+      <form action="" >
         <div class="input-container">
         <p>ID :</p>
-        <input class="input-box" type='text'>
+        <input class="input-box" type='text' v-model="username">
         <p>Password :</p>
-        <input class="input-box" type="password">
+        <input class="input-box" type="password" v-model="password">
       </div>
         <div class="button-container">
           <button class="submit">Submit</button>
@@ -16,7 +16,7 @@
         </div>
       </form>
       <div class="extra-btn">
-        <router-link to='/AdminLogin'>
+        <router-link to='/adminlogin'>
           <button class="admin" >Admin Login</button>
         </router-link>
         <router-link to="/home">
@@ -28,8 +28,7 @@
     </div>
     </template>
 
-<script>
-   
+<script setup>
 </script>
 
 <style scoped>
