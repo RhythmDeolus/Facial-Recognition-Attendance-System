@@ -1,5 +1,56 @@
 <template>
-    <div class="background-image-container">
+  <section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+        <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
+        Flowbite
+      </a>
+      <div
+        class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Admin Login
+          </h1>
+          <form action="" :onsubmit="handleSubmit" class="space-y-4 md:space-y-6">
+            <div>
+              <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Username</label>
+              <input type="text" name="username" id="username" v-model="username"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="name@company.com" required="">
+            </div>
+            <div>
+              <label for="password"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+              <input type="password" name="password" id="password" placeholder="••••••••" v-model="password"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required="">
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input id="remember" aria-describedby="remember" type="checkbox"
+                    class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    required="">
+                </div>
+                <div class="ml-3 text-sm">
+                  <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
+                </div>
+              </div>
+              <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot
+                password?</a>
+            </div>
+            <button type="submit"
+              class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign
+              in</button>
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              Login as student? <router-link to='/login'>Student Login</router-link>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- <div class="background-image-container">
         <div class="card-container">
     <div class="card">
       <center><h1>Admin Login</h1></center>
@@ -25,8 +76,8 @@
         </div>
     </div>
   </div>
-    </div>
-    </template>
+    </div> -->
+</template>
 
 <script setup>
   import { ref } from 'vue';
@@ -57,145 +108,3 @@
     router.push('/')
   }
 </script>
-
-<style scoped>
-.background-image-container {
-  /* Set the background image */
-  background-image: url('../assets/AMS-logo.jpeg');
-
-  /* Set background size, position, and other properties as needed */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  /* Set other styles for the container if needed */
-  width: 100%;
-  height: 700px;
-   /* Or any desired height */
-   
-}
-
-.card-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  backdrop-filter:blur(9px);
-
-  /* Black with 50% opacity */
-}
-
-.card {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Soft shadow effect */
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  
-}
-
-.button-container {
-  display: flex;
-  gap:5px;
-  justify-content: center;
-}
-
-.submit,
-.cancel {
-  border: 2px solid transparent;
-  border-radius: 20px;
-  background-color: transparent;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-color: green;
-  
-  
-  transition: border-color 0.3s, background-color 0.3s;
-}
-
-.cancel{
-  border: 2px solid red;
-}
-
-.submit:hover {
-  border-color: green;
-  color:white;
-  background-color: green;
-}
-
-.cancel:hover {
-  border-color: red;
-  color:white;
-  background-color: red;
-}
-
-.submit:hover,
-.cancel:hover {
-  color: #fff;
-}
-h1{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 2.5em;
-    color: black;
-}
-p{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1.5em;
-    color: black;
-}
-
-.input-box{
-  border:2px solid gray;
-  padding:10px 5px 10px 5px;
-  border-radius: 50px;
-  font-size: 20px;
-}
-
-.input-container{
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 25px;
-}
-
-.admin,
-.home {
-  border: 2px solid blue;
-  border-radius: 20px;
-  background-color: transparent;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s, color 0.3s;/* Added color transition */
-
-}
-
-.home{
-  border: 2px solid green;
-}
-
-.admin:hover,
-.home:hover {
-  color: #fff; /* Change text color on hover */
-}
-
-.admin:hover {
-  border-color: blue; /* Change border color on hover */
-  background-color: blue; /* Change background color on hover */
-}
-
-.home:hover {
-  border-color: green; /* Change border color on hover */
-  background-color: green; /* Change background color on hover */
-}
-
-.extra-btn{
-  display: flex;
-  flex-direction: column;
-  gap:5px;
-  padding : 15px 5px 5px 5px;
-}
-
-</style>
-

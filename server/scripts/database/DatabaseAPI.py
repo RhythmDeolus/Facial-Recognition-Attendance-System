@@ -8,6 +8,12 @@ import sqlalchemy as db
 import os
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
+import dotenv
+
+# load environment variables
+dotenv.load_dotenv()
+
+
 # from models import Student
 
 
@@ -19,7 +25,7 @@ def handle_error(value=None):
                 return f(*args, **kwargs)
             except Exception as e:
                 print(e)
-                args[0].conn.rollback()
+                args[0]._conn().rollback()
                 return value
 
         return inner
@@ -39,9 +45,14 @@ class DatabaseAPI:
         self.fr = FaceRecog()
         register_vector(conn)
 
+    def _conn(self):
+        if self.conn is None or self.conn.closed != 0:
+            self.conn = self.engine.raw_connection()
+        return self.conn
+
     @handle_error()
     def createDatabase(self):
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute("""CREATE EXTENSION IF NOT EXISTS vector;
             CREATE TABLE IF NOT EXISTS student (
                 id int PRIMARY KEY,
@@ -60,11 +71,11 @@ class DatabaseAPI:
             ALTER TABLE attendance DROP CONSTRAINT IF EXISTS check_attendance;
             ALTER TABLE attendance ADD CONSTRAINT check_attendance UNIQUE(student_id, tdate);
         """)
-        self.conn.commit()
+        self._conn().commit()
 
     @handle_error()
     def getStudentIDFromFace(self, embedding: list[float]) -> int | None:
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         embedding = np.array(embedding)
         cursor.execute(
             'SELECT student_id, face_embedding FROM face_id ORDER BY face_embedding <=> %s LIMIT 5;',
@@ -81,29 +92,29 @@ class DatabaseAPI:
         if len(faces) > 0:
             encodings = self.fr.getEncodings(image, [faces[0]])
             embedding = encodings[0]
-            cursor = self.conn.cursor()
+            cursor = self._conn().cursor()
             embedding = np.array(embedding)
             cursor.execute(
                 'INSERT INTO face_id (student_id, face_embedding) VALUES %s;',
                 ((studentID, embedding), ))
-            self.conn.commit()
+            self._conn().commit()
             return True
         return False
 
     @handle_error(False)
     def registerStudent(self, id: int, name: str):
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute('INSERT INTO student (id, name) VALUES %s;',
                        ((id, name), ))
-        self.conn.commit()
+        self._conn().commit()
         return True
 
     @handle_error(False)
     def deleteStudentFace(self, studentID: int) -> bool:
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute('DELETE FROM face_id WHERE student_id = %s;',
                        (studentID, ))
-        self.conn.commit()
+        self._conn().commit()
         return True
 
     @handle_error(False)
@@ -112,7 +123,7 @@ class DatabaseAPI:
         if len(faces) > 0:
             encodings = self.fr.getEncodings(image, [faces[0]])
             embedding = encodings[0]
-            cursor = self.conn.cursor()
+            cursor = self._conn().cursor()
             embedding = np.array(embedding)
             cursor.execute(
                 'UPDATE face_id SET face_embedding = %s WHERE student_id = %s;',
@@ -120,20 +131,20 @@ class DatabaseAPI:
                     embedding,
                     student_id,
                 ))
-            self.conn.commit()
+            self._conn().commit()
             return True
         return False
 
     @handle_error([])
     def get_attendance(self):
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute('SELECT * FROM attendance;')
         response = cursor.fetchall()
         return response
 
     @handle_error([])
     def get_students(self):
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute('SELECT * FROM student;')
         response = cursor.fetchall()
         return response
@@ -142,8 +153,8 @@ class DatabaseAPI:
     def mark_attendance(self, student_id: int, time: datetime) -> bool:
         print('marked attendance for: ', student_id)
         print('at time: ', time)
-        cursor = self.conn.cursor()
+        cursor = self._conn().cursor()
         cursor.execute('INSERT INTO attendance (student_id, time) VALUES %s;',
                        ((student_id, time), ))
-        self.conn.commit()
+        self._conn().commit()
         return True

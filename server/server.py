@@ -17,7 +17,7 @@ api.database = None
 
 @app.on_event('startup')
 async def startup_event():
-    api.conn = psycopg2.connect("postgresql://admin:OvyKkJpX1F2D@ep-winter-haze-81430193.ap-southeast-1.aws.neon.tech/attendance-system?sslmode=require&options=endpoint%3Dep-winter-haze-81430193")
+    api.conn = psycopg2.connect(os.getenv('DB_URL'))
     print("connection established: ", api.conn)
     api.database = DatabaseAPI(api.conn)
     print("api established: ", api.database)
