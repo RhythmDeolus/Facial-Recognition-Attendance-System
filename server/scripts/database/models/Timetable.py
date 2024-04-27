@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from .Base import Base
+# from sqlalchemy.ext.declarative import declarative_base
+# Base = declarative_base()
 
 
 class Timetable(Base):
@@ -16,9 +16,9 @@ class Timetable(Base):
     # timetable_entry = relationship('TimetableEntry', backref='timetable')
     #
     # def __init__(self, course_id):
-        # self.course_id = course_id
+    #    self.course_id = course_id
     __tablename__ = 'timetable'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
 
     def __init__(self):
         pass

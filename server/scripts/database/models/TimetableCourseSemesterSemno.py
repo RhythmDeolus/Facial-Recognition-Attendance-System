@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from .Base import Base
+# from sqlalchemy.ext.declarative import declarative_base
+# Base = declarative_base()
 
 
 class TimetableCourseSemesterSemno(Base):
     __tablename__ = 'timetable_course_semester_semno'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     timetable_id = Column(Integer, ForeignKey('timetable.id'))
     timetable = relationship('Timetable',
                              backref='timetable_course_semester_semno')
@@ -17,6 +17,7 @@ class TimetableCourseSemesterSemno(Base):
     semester = relationship('Semester',
                             backref='timetable_course_semester_semno')
     sem_no = Column(Integer, nullable=False)
+    unique_timetable = UniqueConstraint('timetable_id')
 
     def __init__(self, timetable_id, course_id, semester_id, sem_no):
         self.timetable_id = timetable_id

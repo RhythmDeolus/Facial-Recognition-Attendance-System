@@ -1,6 +1,18 @@
 <template>
     <div :key="rerenderkey" class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+            <div :key="rerenderCourseKey" class="relative z-0 w-full mb-5 group">
+                <label for="courses" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a course</label>
+                <select @change="get_subjects()" v-model="course_id" id="courses" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option v-for="course_id in Object.keys(courses)" :value="course_id">{{courses[course_id].name}}</option>
+                </select>
+            </div>
+            <div :key="rerenderSubjectKey" class="relative z-0 w-full mb-5 group">
+                <label for="subjects" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a subject</label>
+                <select @change="fetchAttendanceData()" v-model="subject_id" id="subjects" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option v-for="subject_id in Object.keys(subjects)" :value="subject_id">{{subjects[subject_id].name}}</option>
+                </select>
+            </div>
             <div>
                 <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio"
                     class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
@@ -97,61 +109,78 @@
                     <th scope="col" class="px-6 py-3">
                         Roll Number
                     </th>
-                    <th v-for="date in dates" :key="date">{{ date.toLocaleDateString() }}</th>
-                </tr>
+                    <th v-for="class_c in classes" :key="class_c">{{ classesDict[class_c].date }}<br/>
+                        {{ (classesDict[class_c].start_time).toString().slice(0, -3) }} - {{ (classesDict[class_c].end_time).toString().slice(0,-3) }} 
+                    </th> </tr>
             </thead>
             <tbody>
                 <tr v-for="(n, index) in studentIdList.length" :key="index"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        style="color:black">{{ studentdata[studentIdList[index]]?.name }}</th>
+                        style="color:white">{{ studentdata[studentIdList[index]]?.name }}</th>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        style="color:black">{{ studentIdList[index] }}</th>
+                        style="color:white">{{ studentIdList[index] }}</th>
                     <td class="px-6 py-4" v-for="attendance in studentAttendance[studentIdList[index]]">
-                        <div bgcolor="green" v-if="attendance"> Pre. </div>
-                        <div bgcolor="red" v-if="!attendance"> Abs. </div>
+                        <div bgcolor="green" v-if="attendance">✅</div>
+                        <div bgcolor="red" v-if="!attendance">❌</div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- <div class="background-image-container">
-        <div class="card-about">
-            <table :key="rerenderkey" border="1" align="center">
-                <thead>
-                    <tr>
-                        <th>Student Name</th>
-                        <th>Student Id</th>
-                        <th v-for="date in dates" :key="date">{{ date.toLocaleDateString() }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(n, index) in studentIdList.length" :key="index">
-                        <td style="color:black">{{ studentdata[studentIdList[index]]?.name }}</td>
-                        <td style="color:black">{{ studentIdList[index] }}</td>
-                        <td v-for="attendance in studentAttendance[studentIdList[index]]">
-                            <div bgcolor="green" v-if="attendance"> Pre. </div>
-                            <div bgcolor="red" v-if="!attendance"> Abs. </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button @click="fetchAttendanceData()">Refresh</button>
-        </div>
-    </div> -->
 </template>
 
 <script setup>
+import { useFetch } from '@/composables/fetch';
+import {ref} from 'vue';
+import { onMounted } from 'vue';
+import { initFlowbite } from 'flowbite';
+onMounted(() => {
+    initFlowbite();
+})
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
 }
+let rerenderCourseKey = ref(0);
+
+function rerenderCourses() {
+    rerenderCourseKey.value += 1;
+}
+
+let courses = []
+let course_id = null;
+
+useFetch('/api_1/get_courses', {}, 'GET').then((response) => {
+    console.log(response)
+    courses = response;
+    rerenderCourses();
+});
+
+let rerenderSubjectKey = ref(0);
+
+function rerenderSubjects() {
+    rerenderSubjectKey.value += 1;
+}
+
+let subjects = []
+let subject_id = null;
+
+function get_subjects() {
+    if (!Number(course_id)) return;
+    useFetch('/api_1/get_subjects_for_course', {
+        course_id: course_id
+    }, 'GET').then((response) => {
+        console.log(response)
+        subjects = response;
+        rerenderSubjects();
+    });
+}
 
 import { useAttendance, useStudents } from '@/composables/fetch';
 
-import {ref} from 'vue';
 
 let rerenderkey = ref(1)
 
@@ -159,7 +188,8 @@ function rerender() {
     rerenderkey.value++;
 }
 
-let dates = []
+let classes = []
+let classesDict = {}
 let studentIdList = []
 let studentAttendance = {}
 
@@ -174,40 +204,42 @@ let attendanceData = {
     '2': { id: 2, name: 'Vasu', day: 2 },
     '3': { id: 3, name: 'Amal', day: 5 },
 }
+let classesData = {
+}
 
 async function fetchAttendanceData() {
     try { 
-        studentdata = await useStudents()
-        attendanceData = await useAttendance();
-        setTable(studentdata, attendanceData);
+        studentdata = await useFetch('/api_1/get_students_for_course', {
+        course_id: course_id
+        }, 'GET');
+        attendanceData = await useFetch('/api_1/get_attendance_for_subject', {
+            subject_id: subject_id
+        }, 'GET');
+        classesData = await useFetch('/api_1/get_classes_for_subject', {
+            subject_id: subject_id
+        }, 'GET');
+        console.log(studentdata, attendanceData)
+        setTable(studentdata, attendanceData, classesData);
         rerender()
     } catch (error) {
         console.error(error);
     }
 }
 
-fetchAttendanceData();
-
-function setTable(studentdata, attendanceData) {
-    dates= []
+function setTable(studentdata, attendanceData, classesData) {
     studentAttendance= {}
     studentIdList= Object.keys(studentdata)
-    let maxDate = new Date(Object.values(attendanceData).reduce((a, b) => Math.max(a, Date.parse(b['time'])), -1))
-    let minDate = new Date(Object.values(attendanceData).reduce((a, b) => Math.min(a, Date.parse(b['time'])), Infinity))
+    classes= Object.keys(classesData)
+    classesDict = classesData
 
-
-    for (let i = minDate; i <= maxDate; i = i.addDays(1)) {
-        dates.push(i);
-    }
     let failed = false;
 
     for (let id of studentIdList) {
         studentAttendance[id] = []
-        for (let i = minDate; i <= maxDate; i = i.addDays(1)) {
-            console.log(typeof i)
+        for (let c in classesData) {
             let idx = -1;
             try {
-                idx = Object.values(attendanceData).findIndex(a => a['id'] == id && (new Date(Date.parse(a['time'])))?.toLocaleDateString() === i?.toLocaleDateString());
+                idx = Object.values(attendanceData).findIndex(a => a['class_id'] == c);
             } catch(e) {
                 console.log(e);
                 failed = true;
@@ -222,9 +254,4 @@ function setTable(studentdata, attendanceData) {
         if (failed) break;
     }
 }
-
-
-
-
-
 </script>

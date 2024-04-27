@@ -20,6 +20,7 @@ class Roles:
     STUDENT = 'student'
     ADMIN = 'admin'
 
+
 fake_users_db = {
     "johndoe": {
         "username": "johndoe",
@@ -27,9 +28,10 @@ fake_users_db = {
         "email": "johndoe@example.com",
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
         "disabled": False,
-        "role" : Roles.ADMIN
+        "role": Roles.ADMIN
     }
 }
+
 
 class Token(BaseModel):
     access_token: str
@@ -118,11 +120,18 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-async def is_student(current_user: Annotated[User, Depends(get_current_active_user)]):
+
+async def is_student(current_user: Annotated[User,
+                     Depends(get_current_active_user)]):
     return current_user.role == Roles.STUDENT
 
-async def is_teacher(current_user: Annotated[User, Depends(get_current_active_user)]):
-    return current_user.role == Roles.TEACHER or current_user.role == Roles.ADMIN
 
-async def is_admin(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def is_teacher(current_user: Annotated[User,
+                     Depends(get_current_active_user)]):
+    return current_user.role == Roles.TEACHER or \
+        current_user.role == Roles.ADMIN
+
+
+async def is_admin(current_user: Annotated[User,
+                   Depends(get_current_active_user)]):
     return current_user.role == Roles.ADMIN

@@ -1,10 +1,8 @@
 <template>
     <div class="card-about">
-    <Navbar/>
     <div class="container">
     <div class="heading-image"><img class="background-image" src="../assets/AMS-logo.jpeg" alt="Facial Attendance Image"></div>
-    <div class="text">
-    <h1>Attendance Management System</h1>
+    <div class="text"> <h1>Attendance Management System</h1>
     </div>
     </div>
     </div>

@@ -10,19 +10,6 @@ load_dotenv()
 
 app = FastAPI()
 
-api.conn = None
-
-api.database = None
-
-
-@app.on_event('startup')
-async def startup_event():
-    api.conn = psycopg2.connect(os.getenv('DB_URL'))
-    print("connection established: ", api.conn)
-    api.database = DatabaseAPI(api.conn)
-    print("api established: ", api.database)
-
-
 # app.mount("/static/", StaticFiles(directory="client/dist/static"), name="static")
 app.mount("/api_1", api)
 app.mount("/", StaticFiles(directory="client/dist", html=True), name="static")

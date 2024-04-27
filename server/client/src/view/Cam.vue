@@ -21,36 +21,6 @@
     <button type="submit"
       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Cancel</button>
   </div>
-
-  <!-- <div class="card-layout">
-    <div class="background-image-container">
-      <div class="card-about">
-        <div class="nav">
-        </div>
-        <div class="card-container">
-          <div class="card">
-            <center>
-              <h1>Enroll Face Data</h1>
-            </center>
-            <div class="input-container">
-              <p>Student ID</p>
-              <input type='text' v-model="id" required class="input-box">
-            </div>
-            <div class="video-container">
-              <video ref="video" autoplay></video>
-              <button @click="captureImage" class="capture-btn">Capture Image</button>
-              <canvas ref="canvas" style="display: none;"></canvas>
-              <img v-if="capturedImage" :src="capturedImage" alt="Captured Image" class="captured-image" />
-            </div>
-            <div class="button-container">
-              <button @click="checkForm" class="submit">Submit</button>
-              <button class="cancel">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </template>
 
 <script>

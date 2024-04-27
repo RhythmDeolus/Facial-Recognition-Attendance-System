@@ -1,14 +1,17 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 # from sqlalchemy import mapped_column
-from pgvector import Vector
+from pgvector.sqlalchemy import Vector
 
+# from .Base import Base
+
+from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
 class Face(Base):
     __tablename__ = 'face_id'
+    id = Column(Integer, autoincrement=True, primary_key=True)
     student_id = Column(Integer, ForeignKey('student.id'), primary_key=True)
     # face_embedding = Column('face_embedding', String, nullable=False)
     face_embedding = Column('face_embedding', Vector(128), nullable=False)

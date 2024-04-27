@@ -2,7 +2,7 @@ import face_recognition
 import cv2
 import numpy as np
 import threading
-import base64 
+import base64
 from PIL import Image
 import io
 
@@ -15,7 +15,7 @@ class FaceRecog(threading.Thread):
         arr = np.array(image)
         arr = cv2.flip(arr, 1)
         return arr
-        
+
     def resizeImg(self, image, frac):
         return cv2.resize(image, (0, 0), fx=frac, fy=frac)
 
