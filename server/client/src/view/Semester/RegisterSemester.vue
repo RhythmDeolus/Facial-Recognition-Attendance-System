@@ -8,7 +8,7 @@
                             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                         </svg>
                     </div>
-                    <input v-model="start_date" name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
+                    <input id="reg_sem_start_date" name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
                 </div>
                 <span class="mx-4 text-gray-500">to</span>
                 <div class="relative">
@@ -17,7 +17,7 @@
                             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                         </svg>
                     </div>
-                    <input v-model="end_date" name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
+                    <input id="reg_sem_end_date" name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
                 </div>
             </div>
         </div>
@@ -31,23 +31,25 @@
 import { onMounted } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { useFetch } from '@/composables/fetch';
+import { ref } from 'vue';
 
 onMounted(() => {
     initFlowbite();
 })
 
 
-let start_date = null;
-let end_date = null;
 
 function checkForm(e) {
-    // console.log((new Date(start_date).toISOString()), end_date);
-    useFetch('/api_1/register_semester', {
-        'start_date': (new Date(start_date).toISOString()),
-        'end_date': (new Date(end_date).toISOString()),
-    }, 'POST').then((response) => {
-        alert(response)
-    });
+    let start_date = document.getElementById('reg_sem_start_date').value;
+    let end_date = document.getElementById('reg_sem_end_date').value;
+    if (start_date && end_date) {
+        useFetch('/api_1/register_semester', {
+            'start_date': (new Date(start_date).toISOString()),
+            'end_date': (new Date(end_date).toISOString()),
+        }, 'POST').then((response) => {
+            alert(response)
+        });
+    }
     e.preventDefault();
 }
 </script>

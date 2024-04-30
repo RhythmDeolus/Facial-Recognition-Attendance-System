@@ -65,12 +65,12 @@ class RegisterDataAPI:
 
     def registerTimetable(self, course_id, semester_id, semno) -> Timetable.id:
         timetable = Timetable()
-        self._session().add(timetable)
         timetable_course_semester_semno = TimetableCourseSemesterSemno(
-            timetable_id=timetable.id,
+            timetable=timetable,
             semester_id=semester_id,
             course_id=course_id,
             sem_no=semno)
+        self._session().add(timetable)
         self._session().add(timetable_course_semester_semno)
         self._session().commit()
         return timetable.id

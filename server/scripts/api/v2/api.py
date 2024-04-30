@@ -142,10 +142,11 @@ async def get_attendance(valid: Annotated[bool, Depends(is_admin)],
 
 @api.get('/get_classes_for_subject')
 async def get_classes_for_subject(valid: Annotated[bool, Depends(is_admin)],
-                                  subject_id: int):
+                                  subject_id: int,
+                                  semester_id: int):
     if not valid:
         return False
-    res = getDatabase().getClassesForSubject(subject_id)
+    res = getDatabase().getClassesForSubject(subject_id, semester_id)
     res = {x.id: {
         "date": x.date,
         "start_time": x.start_time,
@@ -188,7 +189,8 @@ async def get_courses(valid: Annotated[bool, Depends(is_teacher)]):
     if not valid:
         return False
     res = getDatabase().listCourses()
-    res = {x.id: {"name": x.name} for x in res}
+    res = {x.id: {"name": x.name,
+                  "desc": x.description} for x in res}
     return res
 
 
@@ -352,9 +354,12 @@ async def get_academic_calendars(valid: Annotated[bool, Depends(is_teacher)],
 async def get_timetables(valid: Annotated[bool, Depends(is_teacher)]):
     if not valid:
         return False
-    # TODO: Implement
-    res = getDatabase().getTimetables()
-    res = {x[0]: {} for x in res}
+    res = getDatabase().listTimeTables()
+    res = {x.timetable_id: {
+        'course_id': x.course_id,
+        'semester_id': x.semester_id,
+        'sem_no': x.sem_no
+    } for x in res}
     return res
 
 

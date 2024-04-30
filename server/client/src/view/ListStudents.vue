@@ -1,5 +1,11 @@
 <template>
     <div :key="rerenderkey" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div :key="rerenderCourseKey" class="relative z-0 w-full mb-5 group">
+            <label for="courses" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a course</label>
+            <select @change="fetchAttendanceData()" v-model="course_id" id="courses" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option v-for="course_id in Object.keys(courses)" :value="course_id">{{courses[course_id].name}}</option>
+            </select>
+        </div>
         <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
             <label for="table-search" class="sr-only">Search</label>
             <div class="relative">
@@ -21,25 +27,20 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                    Semester ID
+                    Student ID
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Semester Start Date
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Semester End Date
+                        Student Name
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in computedSemesters" :key="item[0]"
+                <tr v-for="item in computedStudents" :key="item[0]"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         style="color:white">{{ item[0] }}</th>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         style="color:white">{{ item[1] }}</th>
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        style="color:white">{{ item[2] }}</th>
                 </tr>
             </tbody>
         </table>
@@ -48,9 +49,9 @@
 </template>
 
 <script setup>
-
 import { useFetch } from '@/composables/fetch';
 import { computed } from 'vue';
+
 
 import {ref} from 'vue';
 
@@ -60,48 +61,57 @@ function rerender() {
     rerenderkey.value++;
 }
 
-let semesters = ref([]);
+let rerenderCourseKey = ref(0);
+
+function rerenderCourses() {
+    rerenderCourseKey.value += 1;
+}
+
+let courses = [];
+let course_id = null;
+useFetch('/api_1/get_courses', {}, 'GET').then((response) => {
+    console.log(response)
+    courses = response;
+    rerenderCourses();
+});
+
+let students = ref([]);
 let search = ref('');
 
-let computedSemesters = computed(() => {
+let computedStudents = computed(() => {
     let term = search.value.toLowerCase();
     if (term)
-    return semesters.value.filter((semester) => {
-        return semester[0].toLowerCase().includes(term) ||
-        semester[1].toLowerCase().includes(term) ||
-        semester[2].toLowerCase().includes(term);
+    return students.value.filter((student) => {
+        return student[0].toLowerCase().includes(term) ||
+        student[1].toLowerCase().includes(term);
     });
-    return semesters.value;
+    return students.value;
 });
 
 
 async function fetchAttendanceData() {
     try { 
-        let semesterData = await useFetch('/api_1/get_semesters', {}, 'GET');
-        setTable(semesterData);
+        let studentData = await useFetch('/api_1/get_students_for_course', {
+        course_id: course_id
+        }, 'GET');
+        console.log(studentData);
+        setTable(studentData);
         rerender()
     } catch (error) {
         console.error(error);
     }
 }
 
-fetchAttendanceData();
-
-function setTable(semesterData) {
-    semesters.value = [];
-
-    let semesterIds = Object.keys(semesterData);
-    for (let id of semesterIds) {
+function setTable(studentData) {
+    students.value = [];
+    let studentIds = Object.keys(studentData);
+    for (let id of studentIds) {
         let data = []
         data.push(id);
-        data.push(new Date(semesterData[id].start_date).toLocaleDateString());
-        data.push(new Date(semesterData[id].end_date).toLocaleDateString());
-        semesters.value.push(data);
+        data.push(studentData[id].name);
+        students.value.push(data);
     }
 }
-
-
-
 
 
 </script>

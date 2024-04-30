@@ -101,38 +101,31 @@ const linkStruct = [
        ['Register Student' , '/studentregistration'],
        [ 'Register Face' , '/cam' ],
        [ 'List Students' , '/list_students' ],
-       ['Delete Student' , '/delete_student'],
     ]],
     [ 'Course' , [
        ['Register Course' , '/register_course'],
        ['List Courses' , '/list_courses'],
-       ['Delete Course' , '/delete_course'],
     ]],
     [ 'Subject' , [
        ['Register Subject' , '/register_subject'],
        ['List Subjects' , '/list_subjects'],
-       ['Delete Subject' , '/delete_subject'],
     ]],
     [ 'Semester' , [
        ['Register Semester' , '/register_semester'],
        ['List Semesters' , '/list_semesters'],
-       ['Delete Semester' , '/delete_semester'],
     ]],
     [ 'Academic Calendar' , [
        ['Register Calendar' , '/register_calendar'],
        ['Assign Calendar' , '/assign_calendar'],
        ['List Calendars' , '/list_calendars'],
-       ['Delete Calendar' , '/delete_calendar'],
     ]],
     [ 'Timetable' , [
        ['Register Timetable' , '/register_timetable'],
        ['List Timetables' , '/list_timetables'],
-       ['Delete Timetable' , '/delete_timetable'],
     ]],
     [ 'Classes' , [
        ['Register Class' , '/register_class'],
        ['List Classes' , '/list_classes'],
-       ['Delete Class' , '/delete_class'],
     ]],
     [ 'Contact Us' , [
        [ 'About' , '/about',],

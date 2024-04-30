@@ -52,8 +52,10 @@ class ClassDataAPI:
         self._session().commit()
         return class_entry.id
 
-    def getClassesForSubject(self, subject_id: int):
+    def getClassesForSubject(self, subject_id: int, semester_id: int):
         return self._session().query(ClassEntry)\
+            .join(AcademicCalendar, AcademicCalendar.id == ClassEntry.academic_calendar_id)\
+            .filter(AcademicCalendar.semester_id == semester_id)\
             .filter(ClassEntry.subject_id == subject_id)\
             .filter(ClassEntry.date <= datetime.now().date())\
-            .filter(ClassEntry.end_time <= datetime.now().time()).all()
+            # .filter(ClassEntry.end_time <= datetime.now().time()).all()

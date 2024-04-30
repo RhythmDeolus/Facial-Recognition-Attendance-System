@@ -84,22 +84,6 @@ class AttendanceDataAPI:
         if academic_cal is None:
             return False
 
-        # academic_cal_entry = \
-        #     self._session().query(AcademicCalendarEntry)\
-        #         .filter(AcademicCalendarEntry.academic_id ==
-        #                 academic_cal.academic_id)\
-        #         .filter(AcademicCalendarEntry.day == time.weekday())\
-        #         .filter(AcademicCalendarEntry.is_class_day is True)\
-        #         .first()
-        # timetable: TimetableEntry = timetable_course_semester_semno.timetable
-        # timetable_entry = self._session().query(TimetableEntry)\
-        #     .filter(TimetableEntry.timetable_id == timetable.timetable_id)\
-        #     .filter(TimetableEntry.start_time <= time)\
-        #     .filter(TimetableEntry.end_time >= time)\
-        #     .first()
-        # if academic_cal_entry is None:
-        #     return False
-
         # Grab the class entry based on the timetable and academic calendar
         class_entry: ClassEntry = self._session().query(ClassEntry)\
             .filter(ClassEntry.timetable_id == timetable_course_semester_semno\

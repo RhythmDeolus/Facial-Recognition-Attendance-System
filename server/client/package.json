@@ -9,6 +9,7 @@
     "watch": "vue-cli-service build --mode=development --watch"
   },
   "dependencies": {
+    "@smartweb/vue-flash-message": "^0.6.10",
     "core-js": "^3.8.3",
     "daisyui": "^4.10.2",
     "flowbite": "^2.3.0",

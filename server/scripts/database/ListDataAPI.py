@@ -48,3 +48,8 @@ class ListDataAPI:
         calendars = self._session().query(AcademicCalendar)\
             .filter(AcademicCalendar.semester_id == semester_id).all()
         return calendars
+
+    def listTimeTables(self) -> list[Timetable]:
+        timetables = self._session().query(TimetableCourseSemesterSemno)\
+            .all()
+        return timetables

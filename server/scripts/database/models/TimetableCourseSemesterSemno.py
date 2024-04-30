@@ -19,8 +19,8 @@ class TimetableCourseSemesterSemno(Base):
     sem_no = Column(Integer, nullable=False)
     unique_timetable = UniqueConstraint('timetable_id')
 
-    def __init__(self, timetable_id, course_id, semester_id, sem_no):
-        self.timetable_id = timetable_id
+    def __init__(self, timetable, course_id, semester_id, sem_no):
+        self.timetable = timetable
         self.course_id = course_id
         self.semester_id = semester_id
         self.sem_no = sem_no

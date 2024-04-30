@@ -1,6 +1,6 @@
-import {VueElement, createApp} from 'vue'
+import { VueElement, createApp } from 'vue'
 import App from './App.vue'
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import HomeVue from './view/Home.vue'
 import AboutVue from './view/About.vue'
 import LoginVue from './view/Login.vue'
@@ -22,6 +22,7 @@ import RegisterTimetableVue from './view/Timetable/RegisterTimetable.vue'
 import ListTimetablesVue from './view/Timetable/ListTimetables.vue'
 import RegisterClassVue from './view/Class/RegisterClass.vue'
 import ListClassesVue from './view/Class/ListClasses.vue'
+import ListStudentsVue from './view/ListStudents.vue'
 
 import './assets/main.css'
 
@@ -33,12 +34,12 @@ import './assets/main.css'
 // Each route should map to a component.
 // We'll talk about nested routes later.
 const routes = [
-    { path: '/home', component: HomeVue , name: 'Home'},
+    { path: '/home', component: HomeVue, name: 'Home' },
     { path: '/about', component: AboutVue },
     { path: '/attendance', component: AttendanceVue },
     { path: '/contact', component: ContactVue },
-    { path: '/login', component: LoginVue, name: "Login"},
-    { path: '/adminlogin', component: AdminLoginVue , name: "AdminLogin"},
+    { path: '/login', component: LoginVue, name: "Login" },
+    { path: '/adminlogin', component: AdminLoginVue, name: "AdminLogin" },
     { path: '/studentregistration', component: StudentRegistrationVue },
     { path: '/cam', component: CamVue },
     { path: '/register_course', component: RegisterCourseVue },
@@ -54,6 +55,7 @@ const routes = [
     { path: '/list_timetables', component: ListTimetablesVue },
     { path: '/register_class', component: RegisterClassVue },
     { path: '/list_classes', component: ListClassesVue },
+    { path: '/list_students', component: ListStudentsVue },
     { path: '/', component: HomeVue },
 ]
 
@@ -72,13 +74,13 @@ router.beforeEach(async (to, from) => {
     if (!localStorage.getItem('token') && (to.name !== 'Login' && to.name !== 'AdminLogin')) {
         console.log('1 login')
         return 'Login'
-    } else if (localStorage.getItem('token') && (to.name === 'Login' || to.name === 'AdminLogin')){
+    } else if (localStorage.getItem('token') && (to.name === 'Login' || to.name === 'AdminLogin')) {
         console.log('2 home')
         return 'Home'
     } else if (to.path === '/logout') {
         console.log('3 logout')
 
-        localStorage.removeItem('token') 
+        localStorage.removeItem('token')
         return 'Login'
     }
 })
