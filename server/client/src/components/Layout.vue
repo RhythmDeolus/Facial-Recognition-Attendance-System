@@ -23,7 +23,30 @@
     <aside id="sidebar-multi-level-sidebar" class="absolute left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 top-auto" style="{top: auto}" aria-label="Sidebar">
    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
       <ul class="space-y-2 font-medium">
-        <template v-for="item in linkStruct">
+        <template v-if="!is_student()" v-for="item in linkStruct">
+            <li v-if="item[1] instanceof Array">
+                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" :onclick="handle_toggle" :aria-controls="item[0]" :data-collapse-toggle="item[0]">
+                <svg v-if='item[0] in svgs' v-html="svgs[item[0]]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" :fill="fills[item[0]]" viewBox="0 0 23 23" class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                            </svg>
+                  <svg v-else class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+                     <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                  </svg>
+                            <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{item[0]}}</span>
+                  <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/> </svg>
+            </button>
+            <ul :id="item[0]" class="hidden py-2 space-y-2">
+                  <li v-for="link in item[1]">
+                                <router-link :to="link[1]" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">{{link[0]}}</router-link>
+                  </li>
+            </ul>
+            </li>
+            <li v-else>
+                <router-link class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"  :to="item[1]">
+                            <span class="ms-3">{{item[0]}}</span></router-link> 
+            </li>
+        </template>
+        <template v-else v-for="item in linkStructStudent">
             <li v-if="item[1] instanceof Array">
                         <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" :onclick="handle_toggle" :aria-controls="item[0]" :data-collapse-toggle="item[0]">
                 <svg v-if='item[0] in svgs' v-html="svgs[item[0]]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" :fill="fills[item[0]]" viewBox="0 0 23 23" class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
@@ -56,7 +79,7 @@
 </template>
 
 <script setup>
-import { useCheckAuth } from '@/composables/auth';
+import { useCheckAuth, is_student } from '@/composables/auth';
 
 function handle_toggle(e){
     let target = e.target;
@@ -130,6 +153,12 @@ const linkStruct = [
     [ 'Contact Us' , [
        [ 'About' , '/about',],
        [ 'Contributors' , '/contact' ],
+    ]],
+];
+
+const linkStructStudent = [
+    [ 'Attendance' , [
+       ['List Attendance' , '/my_attendance'],
     ]],
 ];
 

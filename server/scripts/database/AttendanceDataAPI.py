@@ -113,6 +113,8 @@ class AttendanceDataAPI:
 
     def getAttendanceForStudent(self, student_id):
         return self._session().query(Attendance)\
+            .join(ClassEntry)\
+            .join(Subject, ClassEntry.subject_id == Subject.id)\
             .filter(Attendance.student_id == student_id)\
             .all()
 

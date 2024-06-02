@@ -4,8 +4,8 @@ from datetime import datetime, date, time
 from typing import Annotated
 from ...database.MainDataAPI import MainDataAPI
 from .jwt import is_admin, is_teacher, ACCESS_TOKEN_EXPIRE_MINUTES, \
-    Token, create_access_token, authenticate_user, HTTPException, status, \
-    OAuth2PasswordRequestForm, fake_users_db, timedelta, is_student
+    Token, create_access_token, authenticate_user, authenticate_user_student, HTTPException, status, \
+    OAuth2PasswordRequestForm, fake_users_db, timedelta, is_student, get_student_id
 
 api = FastAPI()
 
@@ -53,7 +53,25 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user.username, "role": "admin"}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
+
+@api.post("/student_token")
+async def student_login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+) -> Token:
+    user = authenticate_user_student(fake_users_db, form_data.username,
+                             form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": form_data.username, "role": "student"}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
@@ -140,6 +158,22 @@ async def get_attendance(valid: Annotated[bool, Depends(is_admin)],
     return res
 
 
+@api.get('/get_attendance_for_student')
+async def get_attendance(valid: Annotated[bool, Depends(is_student)],
+                         student_id: Annotated[int, Depends(get_student_id)]):
+    if not valid and subject_id is None:
+        return False
+    res = getDatabase().getAttendanceForStudent(student_id)
+    res = {x.attendance_id: {
+                "subject_id": x.class_entry.subject.id,
+                "subject_name": x.class_entry.subject.name,
+                  "class_id": x.class_entry_id, "start_time": x.class_entry.start_time,
+                  "end_time": x.class_entry.end_time,
+                  "date": x.class_entry.date
+                  } for x in res}
+    return res
+
+
 @api.get('/get_classes_for_subject')
 async def get_classes_for_subject(valid: Annotated[bool, Depends(is_admin)],
                                   subject_id: int,
@@ -155,6 +189,23 @@ async def get_classes_for_subject(valid: Annotated[bool, Depends(is_admin)],
         "timetable_id": x.timetable_id
     } for x in res}
     return res
+
+@api.get('/get_classes_for_subject_student')
+async def get_classes_for_subject_student(valid: Annotated[bool, Depends(is_student)],
+                                  subject_id: int,
+                                  semester_id: int):
+    if not valid:
+        return False
+    res = getDatabase().getClassesForSubject(subject_id, semester_id)
+    res = {x.id: {
+        "date": x.date,
+        "start_time": x.start_time,
+        "end_time": x.end_time,
+        "academic_calendar_id": x.academic_calendar_id,
+        "timetable_id": x.timetable_id
+    } for x in res}
+    return res
+
 
 
 @api.post('/register_subject')
@@ -205,6 +256,16 @@ async def register_semester(valid: Annotated[bool, Depends(is_admin)],
 
 @api.get('/get_semesters')
 async def get_semsters(valid: Annotated[bool, Depends(is_admin)]):
+    if not valid:
+        return False
+    res = getDatabase().listSemsters()
+    return {x.id: {
+        "start_date": x.start_date,
+        "end_date": x.end_date
+    } for x in res}
+
+@api.get('/get_semesters_student')
+async def get_semsters_student(valid: Annotated[bool, Depends(is_student)]):
     if not valid:
         return False
     res = getDatabase().listSemsters()

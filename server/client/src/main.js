@@ -23,16 +23,11 @@ import ListTimetablesVue from './view/Timetable/ListTimetables.vue'
 import RegisterClassVue from './view/Class/RegisterClass.vue'
 import ListClassesVue from './view/Class/ListClasses.vue'
 import ListStudentsVue from './view/ListStudents.vue'
+import MyAttendanceVue from './view/StudentRoutes/Attendance.vue'
 
 import './assets/main.css'
 
 
-// 1. Define route components.
-// These can be imported from other files
-
-// 2. Define some routes
-// Each route should map to a component.
-// We'll talk about nested routes later.
 const routes = [
     { path: '/home', component: HomeVue, name: 'Home' },
     { path: '/about', component: AboutVue },
@@ -56,16 +51,14 @@ const routes = [
     { path: '/register_class', component: RegisterClassVue },
     { path: '/list_classes', component: ListClassesVue },
     { path: '/list_students', component: ListStudentsVue },
+
+    { path: '/my_attendance', component: MyAttendanceVue },
     { path: '/', component: HomeVue },
 ]
 
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
 const router = createRouter({
-    // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHistory(),
-    routes, // short for `routes: routes`
+    routes,
 })
 
 
@@ -86,13 +79,9 @@ router.beforeEach(async (to, from) => {
 })
 
 
-// 5. Create and mount the root instance.
 const app = createApp(App)
 
-// Make sure to _use_ the router instance to make the
-// whole app router-aware.
 app.use(router)
 
 app.mount('#app')
 
-// Now the app has started! 
