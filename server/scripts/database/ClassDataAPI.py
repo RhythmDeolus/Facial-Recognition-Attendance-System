@@ -57,5 +57,5 @@ class ClassDataAPI:
             .join(AcademicCalendar, AcademicCalendar.id == ClassEntry.academic_calendar_id)\
             .filter(AcademicCalendar.semester_id == semester_id)\
             .filter(ClassEntry.subject_id == subject_id)\
-            .filter(ClassEntry.date <= datetime.now().date())\
+            .filter(ClassEntry.date <= datetime.now().date()).all()
             # .filter(ClassEntry.end_time <= datetime.now().time()).all()

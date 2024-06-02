@@ -12,7 +12,7 @@ from pydantic import BaseModel
 # openssl rand -hex 32
 SECRET_KEY = "1234"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 24*60
 
 
 class Roles:
@@ -81,6 +81,15 @@ def authenticate_user(fake_db, username: str, password: str):
         return False
     return user
 
+import re
+
+def authenticate_user_student(fake_db, username: str, password: str):
+    pattern = r"\d+"
+    valid = re.search(pattern, password)
+    if not valid:
+        return False
+    return True
+
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -113,6 +122,27 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
+async def get_current_user_student(token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        role: str = payload.get("role")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = { 'username': username,
+            'role': role
+            }
+    return user
+
+
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
@@ -121,9 +151,30 @@ async def get_current_active_user(
     return current_user
 
 
+async def get_current_active_user_student(
+    current_user: Annotated[User, Depends(get_current_user_student)]
+):
+    if current_user is None:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+
 async def is_student(current_user: Annotated[User,
-                     Depends(get_current_active_user)]):
-    return current_user.role == Roles.STUDENT
+                     Depends(get_current_active_user_student)]):
+    return current_user['role'] == "student"
+
+async def get_student_id(current_user: Annotated[User,
+                     Depends(get_current_active_user_student)]):
+    pattern = r"\d+"
+    valid = re.search(pattern, current_user['username'])
+    if not valid:
+        return None
+    id = None
+    try:
+        id = int(valid.group(0))
+    except ValueError:
+        return None
+    return id
 
 
 async def is_teacher(current_user: Annotated[User,
