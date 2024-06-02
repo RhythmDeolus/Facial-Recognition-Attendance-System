@@ -1,27 +1,20 @@
 <template>
-  <div id="app">
-    <Navbar />
-    <router-view />
-  </div>
+    <Layout v-if="isIncluded">
+        <router-view /> 
+    </Layout>
+    <router-view v-else />
 </template>
 
-<script>
-import Navbar from "@/components/Navbar.vue";
+<script setup>
+import Layout from "@/components/Layout.vue";
+import { useRoute } from "vue-router";
+import { onUpdated, computed } from "vue";
+const excludedRoutes =  new Set(['AdminLogin', 'Login']);
+const isIncluded = computed(() => !excludedRoutes.has(route.name));
+const route = useRoute();
+onUpdated(() => console.log(excludedRoutes.has(route.path), excludedRoutes, route.path));
 
-export default {
-  name: 'App',
-  components: {
-    Navbar,
-  },
-};
+
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 0px;
-}
-</style>
 

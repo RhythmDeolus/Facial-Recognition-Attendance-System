@@ -15,8 +15,9 @@ import requests
 f = FaceRecog()
 
 cache = {
-  'index': [],
-  'value': []
+    'index': [],
+    'value': [],
+    'id': [],
 }
 
 
@@ -31,7 +32,7 @@ def mark_attendance(url, json):
 
 
 def worker(q):
-    url = 'http://127.0.0.1:8000/api_1/mark_attendance'
+    url = 'http://127.0.0.1:4000/api_1/mark_attendance'
     while True:
         image = q.get()
 
@@ -49,7 +50,16 @@ def worker(q):
                                                          tolerance=0.6)
                 idx = matches.index(True)
                 print('cache hit')
-                print('student id: ', cache['value'][idx])
+                print('student id: ', cache['id'][idx])
+                if cache['value'][idx] > datetime.datetime.now():
+                    print('Attendance was already marked for student id: ',
+                          cache['id'][idx])
+                else:
+                    cache['value'].pop(idx)
+                    cache['index'].pop(idx)
+                    cache['id'].pop(idx)
+                    raise Exception('time expired')
+
             except Exception:
                 res = mark_attendance(url,
                                       {'embedding': encoding.tolist(),
@@ -57,8 +67,9 @@ def worker(q):
                                        .strftime("%Y-%m-%d %H:%M:%S")})
                 if ('id' in res) and res['id'] is not None:
                     print('Attendance was marked for student id: ', res['id'])
-                    cache['index'].append(res['embedding'])
-                    cache['value'].append(res['id'])
+                    cache['index'].append(encoding.tolist())
+                    cache['id'].append(res['id'])
+                    cache['value'].append(res['end_time'])
                 else:
                     print("couldn't find any record of you")
 
