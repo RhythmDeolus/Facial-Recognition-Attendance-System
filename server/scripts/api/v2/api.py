@@ -3,9 +3,16 @@ from pydantic import BaseModel
 from datetime import datetime, date, time
 from typing import Annotated
 from ...database.MainDataAPI import MainDataAPI
+from ...database.models import ClassEntry
 from .jwt import is_admin, is_teacher, ACCESS_TOKEN_EXPIRE_MINUTES, \
     Token, create_access_token, authenticate_user, authenticate_user_student, HTTPException, status, \
     OAuth2PasswordRequestForm, fake_users_db, timedelta, is_student, get_student_id
+
+from .grpc_api import serve_grpc
+from multiprocessing import Process
+
+t = Process(target=serve_grpc)
+t.start()
 
 api = FastAPI()
 
@@ -56,6 +63,7 @@ async def login_for_access_token(
         data={"sub": user.username, "role": "admin"}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
+
 
 @api.post("/student_token")
 async def student_login_for_access_token(
@@ -161,7 +169,7 @@ async def get_attendance(valid: Annotated[bool, Depends(is_admin)],
 @api.get('/get_attendance_for_student')
 async def get_attendance(valid: Annotated[bool, Depends(is_student)],
                          student_id: Annotated[int, Depends(get_student_id)]):
-    if not valid and subject_id is None:
+    if not valid and student_id is None:
         return False
     res = getDatabase().getAttendanceForStudent(student_id)
     res = {x.attendance_id: {

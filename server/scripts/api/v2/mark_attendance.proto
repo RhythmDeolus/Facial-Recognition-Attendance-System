@@ -1,0 +1,19 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package attendance;
+
+service AttendanceService {
+    rpc MarkAttendance (AttendanceRequest) returns (AttendanceResponse) {}
+}
+
+message AttendanceRequest {
+    google.protobuf.Timestamp time = 1;
+    repeated float embedding = 2;
+}
+
+message AttendanceResponse {
+    bool found = 1;
+    int64 student_id = 2;
+    google.protobuf.Timestamp end_time = 3;
+}
